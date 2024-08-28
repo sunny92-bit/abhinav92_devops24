@@ -1,0 +1,35 @@
+- name: Install Git on nodes
+  hosts: dev
+  become: yes
+  tasks:
+    - name: Install Git
+      yum:
+        name: git
+        state: present
+    - name: Install httpd package
+      yum:
+        name: httpd
+        state: present
+    - name: Ensure httpd service is started and enabled on boot
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+    - name: Create a directory /static_webpage
+      file:
+        path: /static_webpage
+        state: directory
+        mode: '0755'
+    - name: Clone the repository into /static_webpage
+      git:
+        repo: 'https://github.com/sunny92-bit/abhinav92_devops24.git'
+        dest: /static_webpage
+        force: yes
+    - name: Copy index.html to /var/www/html/ from /static_webpage
+      copy:
+        src: /static_webpage/Static_WebPage/index.html
+        dest: /var/www/html/index.html
+        remote_src: yes
+        mode: '0644'
+      delegate_to: "{{ item }}"
+      with_items: "{{ groups['dev'] }}"

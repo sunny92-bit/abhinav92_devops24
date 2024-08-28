@@ -1,0 +1,31 @@
+---
+- name: Custom User & Group Creation Playbook
+  hosts: dev
+  become: yes
+  tasks:
+    - name: Create appgroup group
+      group:
+        name: appgroup
+        state: present
+
+    - name: Create the appuser user with home directory
+      user:
+        name: appuser
+        group: appgroup
+        state: present
+        create_home: yes
+        shell: /bin/bash
+    - name: Ensure /var/log/app_logs directory exists
+      file:
+        path: /var/log/app_logs
+        state: directory
+        mode: '0766'
+        owner: appuser
+        group: appgroup
+    - name: Ensure /tmp/app_temp directory directory exists
+      file:
+        path: /tmp/app_temp
+        state: directory
+        mode: '0766'
+        owner: appuser
+        group: appgroup

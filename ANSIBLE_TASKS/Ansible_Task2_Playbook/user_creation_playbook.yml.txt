@@ -1,0 +1,17 @@
+---
+- name: Custom User & Group Creation Playbook
+  hosts: dev
+  become: yes
+  tasks:
+    - name: Create deploy group
+      group:
+        name: deploy
+        state: present
+
+    - name: Create the deploy user with home directory
+      user:
+        name: deploy
+        group: deploy
+        state: present
+        create_home: yes
+        shell: /bin/bash

@@ -1,0 +1,40 @@
+- name: Secure web server with firewalld
+  hosts: dev
+  become: yes
+
+  tasks:
+    - name: Install firewalld
+      yum:
+        name: firewalld
+        state: present
+
+    - name: Start and enable firewalld
+      service:
+        name: firewalld
+        state: started
+        enabled: true
+
+    - name: Allow HTTP service
+      firewalld:
+        service: http
+        permanent: true
+        state: enabled
+        immediate: yes
+
+    - name: Allow HTTPS service
+      firewalld:
+        service: https
+        permanent: true
+        state: enabled
+        immediate: yes
+
+    - name: Allow SSH service
+      firewalld:
+        service: ssh
+        permanent: true
+        state: enabled
+        immediate: yes
+
+
+    - name: Reload firewalld to apply changes
+      command: firewall-cmd --reload
